@@ -11,15 +11,15 @@ import javax.inject.Inject
 class FindacApplication: Application(), HasAndroidInjector {
 
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate() {
         super.onCreate()
-        val component = DaggerAppComponent.builder.application(this).build()
+        val component = App.builder.application(this).build()
         component.inject(this)
     }
 
-    override fun activityInjector(): AndroidInjector<Activity> = dispatchingAndroidInjector
 
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
 }

@@ -14,7 +14,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.create
 import javax.inject.Singleton
 
-@Module(includes = arrayOf(ViewModelModule::class))
+@Module(includes = [ViewModelModule::class])
 class ApplicationModule{
     @Provides
     @Singleton

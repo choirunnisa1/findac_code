@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.choirunnisa.fidac_choirunnisa_test.R
 import com.choirunnisa.fidac_choirunnisa_test.databinding.ActivityListProductBinding
+import com.choirunnisa.fidac_choirunnisa_test.databinding.RowListProductBinding
 import com.choirunnisa.fidac_choirunnisa_test.model.Products
+import com.squareup.picasso.Picasso
 
 class ProductsAdapter(val context: Context) : RecyclerView.Adapter<ProductsAdapter.ListViewHolder>(){
 
@@ -22,22 +25,28 @@ class ProductsAdapter(val context: Context) : RecyclerView.Adapter<ProductsAdapt
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val view = ActivityListProductBinding.inflate(LayoutInflater).from(parent.context)
-            .inflate(R.layout.row_list_product, parent, false)
+        val view = RowListProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-
+       with(holder){
+           with(listProducts[position]){
+               binding.productName.text = this.product_name
+               val photoUrl = "https://app.minjem.biz.id/upload/tech_test_image/${this.product_image}"
+               Picasso.get().load(photoUrl)
+                   .placeholder(R.drawable.avatar)
+                   .resize(200, 100)
+                   .error(R.drawable.avatar).into(binding.imgProduct)
+               binding.productPrice.text = this.product_price
+           }
+       }
     }
 
     override fun getItemCount(): Int = listProducts.size
 
-    inner class ListViewHolder(private val binding: ActivityListProductBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(listProduct : Products){
+    inner class ListViewHolder(val binding: RowListProductBinding) : RecyclerView.ViewHolder(binding.root)
 
-        }
     }
 
 
-}
