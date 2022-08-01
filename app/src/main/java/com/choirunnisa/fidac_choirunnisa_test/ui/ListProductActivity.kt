@@ -1,5 +1,6 @@
 package com.choirunnisa.fidac_choirunnisa_test.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -34,7 +35,6 @@ class ListProductActivity : AppCompatActivity(), CoroutineScope {
         ViewModelProviders.of(this, viewModelFactory).get(ListProductViewModel::class.java)
     }
 
-
     private var _binding : ActivityListProductBinding? = null
     private val binding get() =  _binding!!
 
@@ -43,9 +43,9 @@ class ListProductActivity : AppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
+        job = Job()
         _binding = ActivityListProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        job = Job()
 
         rvProductsAdapter = ProductsAdapter(this)
         binding.rvListProduct.apply {
@@ -68,7 +68,16 @@ class ListProductActivity : AppCompatActivity(), CoroutineScope {
 
         vm.listProducts.observe(this, Observer(::onLoadProducts))
 
+        binding.goToPerson.setOnClickListener {
+            startActivity(Intent(this, DetailUserActivity::class.java))
+        }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        launch {
+            vm.getListProducts()
+        }
     }
 
     private fun onLoadProducts(product: List<Products>?){

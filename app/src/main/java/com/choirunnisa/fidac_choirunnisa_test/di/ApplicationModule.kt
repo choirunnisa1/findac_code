@@ -27,7 +27,7 @@ class ApplicationModule{
         .addInterceptor{
             val request = it.request()
             val newUrl = request.url().newBuilder()
-                .host("https://app.minjem.biz.id/")
+                .host("app.minjem.biz.id")
                 .build()
             it.proceed(request.newBuilder().url(newUrl).build())
         }.build()
@@ -44,6 +44,7 @@ class ApplicationModule{
     @Singleton
     @Provides
     fun provideFindacApi(retrofit: Retrofit): FindacApi = retrofit.create(FindacApi::class.java)
+
 
     @Provides
     fun provideFindacService(findacApi: FindacApi): FindacService =

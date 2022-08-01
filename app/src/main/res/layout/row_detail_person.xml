@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="5dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:id="@+id/judul"
+        android:text="judul"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:id="@+id/isian"
+        android:layout_alignParentRight="true"
+        android:text="isi"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

@@ -12,8 +12,8 @@ class FindacInteractor(val findacService: FindacService) {
         return result
     }
 
-    suspend fun getUsers() : List<User>{
-        val result = findacService.getUsers().data
+    suspend fun getUsers() : User{
+        val result = findacService.getUsers().data[0]
         return result
     }
 

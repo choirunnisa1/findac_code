@@ -36,9 +36,13 @@ class ProductsAdapter(val context: Context) : RecyclerView.Adapter<ProductsAdapt
                val photoUrl = "https://app.minjem.biz.id/upload/tech_test_image/${this.product_image}"
                Picasso.get().load(photoUrl)
                    .placeholder(R.drawable.avatar)
-                   .resize(200, 100)
+                   .resize(120, 200)
                    .error(R.drawable.avatar).into(binding.imgProduct)
                binding.productPrice.text = this.product_price
+               binding.to.setOnClickListener {
+
+               }
+
            }
        }
     }

@@ -3,23 +3,25 @@ package com.choirunnisa.fidac_choirunnisa_test
 import android.app.Activity
 import android.app.Application
 import com.choirunnisa.fidac_choirunnisa_test.di.AppComponent
+import com.choirunnisa.fidac_choirunnisa_test.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.android.HasActivityInjector
+
 import javax.inject.Inject
 
-class FindacApplication: Application(), HasAndroidInjector {
+class FindacApplication: Application(), HasActivityInjector {
 
     @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+    lateinit var androidInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
         super.onCreate()
-        val component = App.builder.application(this).build()
+        val component = DaggerAppComponent.builder().application(this).build()
         component.inject(this)
     }
 
 
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
+    override fun activityInjector(): AndroidInjector<Activity> = androidInjector
 
 }
