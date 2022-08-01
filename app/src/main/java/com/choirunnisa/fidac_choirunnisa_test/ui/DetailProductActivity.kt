@@ -22,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -72,7 +74,7 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope{
         variantAdapter = VariantAdapter(this)
         binding.varian.apply {
             adapter = variantAdapter
-            layoutManager = LinearLayoutManager(this@DetailProductActivity)
+            layoutManager = LinearLayoutManager(this@DetailProductActivity,  LinearLayoutManager.HORIZONTAL ,false)
         }
 
         binding.tbNameProduct.setNavigationIcon(R.drawable.ic_arrow_back_black)
@@ -101,7 +103,7 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope{
 
     private fun onPrice(result: String?){
         result ?: return
-        binding.price.text = result
+        binding.price.text = NumberFormat.getCurrencyInstance(Locale("id","ID")).format(result.toDouble())
     }
 
     private fun onVarian(result: List<Variants>?){

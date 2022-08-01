@@ -10,6 +10,7 @@ import com.choirunnisa.fidac_choirunnisa_test.R
 import com.choirunnisa.fidac_choirunnisa_test.databinding.ActivityListProductBinding
 import com.choirunnisa.fidac_choirunnisa_test.databinding.RowListProductBinding
 import com.choirunnisa.fidac_choirunnisa_test.model.Products
+import com.choirunnisa.fidac_choirunnisa_test.ui.ListProductActivity
 import com.squareup.picasso.Picasso
 
 class ProductsAdapter(val context: Context) : RecyclerView.Adapter<ProductsAdapter.ListViewHolder>(){
@@ -40,7 +41,7 @@ class ProductsAdapter(val context: Context) : RecyclerView.Adapter<ProductsAdapt
                    .error(R.drawable.avatar).into(binding.imgProduct)
                binding.productPrice.text = this.product_price
                binding.to.setOnClickListener {
-
+                   (context as ListProductActivity).goToDetail(this.id_produk)
                }
 
            }

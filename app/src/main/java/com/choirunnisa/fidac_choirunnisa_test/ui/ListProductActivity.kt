@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -80,6 +81,11 @@ class ListProductActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    fun goToDetail(id: Int){
+        startActivity(Intent(this,DetailProductActivity::class.java).apply {
+            putExtra(DetailProductActivity.paramIdProduct, id)
+        })
+    }
     private fun onLoadProducts(product: List<Products>?){
         product ?: return
         rvProductsAdapter.addData(product)

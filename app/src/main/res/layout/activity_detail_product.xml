@@ -14,14 +14,17 @@
 
 
     <TextView
-        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tb_name_product"
         android:layout_centerHorizontal="true"
-        android:textAlignment="center"
-        android:id="@+id/price"
+        android:layout_marginTop="20dp"
         android:text="690000"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:textAlignment="center" />
     <TextView
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -38,7 +41,7 @@
         android:id="@+id/varian_title"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="bjrnvjntjb"
+        android:text="Varian"
         android:layout_marginTop="20dp"
         android:layout_below="@id/desc"
         android:layout_centerHorizontal="true"
@@ -49,6 +52,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="20dp"
         android:id="@+id/varian"
+        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/varian_title"
