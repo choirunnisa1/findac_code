@@ -19,16 +19,17 @@
         android:layout_height="200dp"
         android:layout_below="@id/tb_name_product" />
 
-    <LinearLayout
-        android:background="@drawable/indicator_active"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/slider"
+    <com.google.android.material.tabs.TabLayout
+        app:tabIndicatorHeight="0dp"
+        app:tabGravity="center"
+        app:tabBackground="@drawable/dot_indicator"
         android:id="@+id/indicatorContent"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/slider"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal" />
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/price"

@@ -2,12 +2,10 @@ package com.choirunnisa.fidac_choirunnisa_test.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +24,7 @@ import com.choirunnisa.fidac_choirunnisa_test.viewmodel.DetailPersonViewModel
 import com.choirunnisa.fidac_choirunnisa_test.viewmodel.DetailProductViewModel
 import com.choirunnisa.fidac_choirunnisa_test.viewmodel.ListProductViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.CoroutineScope
@@ -89,9 +88,10 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
         vm.detail.observe(this, Observer(::onDetail))
 
 
+        binding.slider.adapter = imageAdapter
+        binding.slider.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vm.image.observe(this, Observer(::loadImage))
-        setupIndicator()
-        setCurrentIndicator(0)
+
         variantAdapter = VariantAdapter(this)
         binding.varian.apply {
             adapter = variantAdapter
@@ -109,6 +109,9 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
             onBackPressed()
         }
 
+        TabLayoutMediator(binding.indicatorContent, binding.slider) { tab, position ->
+            //Some implementation
+        }.attach()
 
 
 
@@ -145,12 +148,11 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
         result ?: return
         imageAdapter.addData(result)
         imageAdapter.notifyDataSetChanged()
-        binding.slider.adapter = imageAdapter
         binding.slider.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                Log.d("position", "$position")
                 super.onPageSelected(position)
-                setCurrentIndicator(position)
 
             }
         })
@@ -206,52 +208,5 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
     }
 
 
-    private fun setupIndicator() {
-        val indicator = arrayOfNulls<ImageView>(imageAdapter.itemCount)
-        val layoutParams: LinearLayout.LayoutParams =
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        layoutParams.setMargins(8, 0, 8, 0)
-        for (i in indicator.indices) {
-            indicator[i] = ImageView(applicationContext)
-            indicator[i]?.let {
-                it.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        applicationContext,
-                        R.drawable.indicator_inactive
-                    )
-                )
-                it.layoutParams = layoutParams
-                binding.indicatorContent.addView(it)
-
-            }
-        }
-    }
-
-    private fun setCurrentIndicator(position: Int) {
-
-        val childCount = binding.indicatorContent.childCount
-        for (i in 0 until childCount) {
-            val imageView = binding.indicatorContent.getChildAt(i) as ImageView
-            if (i == position) {
-                imageView.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        applicationContext,
-                        R.drawable.indicator_active
-                    )
-                )
-            } else {
-                imageView.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        applicationContext,
-                        R.drawable.indicator_inactive
-                    )
-                )
-            }
-        }
-
-    }
 
 }
