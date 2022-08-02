@@ -49,10 +49,8 @@ class ListProductActivity : AppCompatActivity(), CoroutineScope {
         setContentView(binding.root)
 
         rvProductsAdapter = ProductsAdapter(this)
-        binding.rvListProduct.apply {
-            adapter = rvProductsAdapter
-            layoutManager = LinearLayoutManager(this@ListProductActivity)
-        }
+        binding.rvListProduct.adapter = rvProductsAdapter
+
 
         launch {
             try {

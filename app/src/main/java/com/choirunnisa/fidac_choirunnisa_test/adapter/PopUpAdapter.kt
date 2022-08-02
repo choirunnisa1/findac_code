@@ -10,7 +10,7 @@ import com.choirunnisa.fidac_choirunnisa_test.databinding.RowVariantBinding
 import com.choirunnisa.fidac_choirunnisa_test.model.Variants
 import com.choirunnisa.fidac_choirunnisa_test.ui.DetailProductActivity
 
-class VariantAdapter(val context: Context) : RecyclerView.Adapter<VariantAdapter.ListViewHolder>(){
+class PopUpAdapter(val context: Context) : RecyclerView.Adapter<PopUpAdapter.ListViewHolder>(){
 
     var listVariant = mutableListOf<Variants>()
 
@@ -32,7 +32,7 @@ class VariantAdapter(val context: Context) : RecyclerView.Adapter<VariantAdapter
            with(listVariant[position]){
                binding.color.setBackgroundColor(Color.parseColor(this.variant_color))
                binding.color.setOnClickListener {
-                   (context as DetailProductActivity).showPopUp()
+                   (context as DetailProductActivity).changeImage(this.variant_image)
                }
            }
        }

@@ -65,6 +65,10 @@ data class Variants(
     val variant_image : String
 )
 
+data class ImageSlider(
+    val imageSlide : String
+)
+
 data class reqProduct(
     val id : Int
 )

@@ -2,10 +2,13 @@ package com.choirunnisa.fidac_choirunnisa_test.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -13,16 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.choirunnisa.fidac_choirunnisa_test.R
-import com.choirunnisa.fidac_choirunnisa_test.adapter.ImageAdapter
-import com.choirunnisa.fidac_choirunnisa_test.adapter.PersonAdapter
-import com.choirunnisa.fidac_choirunnisa_test.adapter.StudiesAdapter
-import com.choirunnisa.fidac_choirunnisa_test.adapter.VariantAdapter
+import com.choirunnisa.fidac_choirunnisa_test.adapter.*
 import com.choirunnisa.fidac_choirunnisa_test.databinding.ActivityDetailProductBinding
 import com.choirunnisa.fidac_choirunnisa_test.databinding.ActivityListProductBinding
+import com.choirunnisa.fidac_choirunnisa_test.databinding.PopUpButtomBinding
+import com.choirunnisa.fidac_choirunnisa_test.model.DetailProduct
 import com.choirunnisa.fidac_choirunnisa_test.model.Variants
 import com.choirunnisa.fidac_choirunnisa_test.viewmodel.DetailPersonViewModel
 import com.choirunnisa.fidac_choirunnisa_test.viewmodel.DetailProductViewModel
 import com.choirunnisa.fidac_choirunnisa_test.viewmodel.ListProductViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.squareup.picasso.Picasso
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +61,11 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
 
     lateinit var variantAdapter: VariantAdapter
     lateinit var imageAdapter: ImageAdapter
+    lateinit var popUpAdapter: PopUpAdapter
+
+
+    var imageDetail = ""
+    lateinit var imgPopUp : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +75,7 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
         setContentView(binding.root)
         idProduct = intent.getIntExtra(paramIdProduct, 0)
 
+        imageAdapter = ImageAdapter(this)
         launch {
             try {
                 vm.getTitle(idProduct)
@@ -75,12 +85,13 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
             }
         }
 
-        vm.title.observe(this, Observer(::onTitle))
-        vm.desc.observe(this, Observer(::onDesc))
-        vm.harga.observe(this, Observer(::onPrice))
-        vm.image.observe(this, Observer(::onVarian))
-        vm.image.observe(this, Observer(::loadImage))
 
+        vm.detail.observe(this, Observer(::onDetail))
+
+
+        vm.image.observe(this, Observer(::loadImage))
+        setupIndicator()
+        setCurrentIndicator(0)
         variantAdapter = VariantAdapter(this)
         binding.varian.apply {
             adapter = variantAdapter
@@ -91,11 +102,14 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
             )
         }
 
+        popUpAdapter = PopUpAdapter(this)
+
         binding.tbNameProduct.setNavigationIcon(R.drawable.ic_arrow_back_black)
         binding.tbNameProduct.setNavigationOnClickListener {
             onBackPressed()
         }
-        imageAdapter = ImageAdapter(this)
+
+
 
 
     }
@@ -107,26 +121,24 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-    private fun onTitle(result: String?) {
-        result ?: return
-        binding.tbNameProduct.title = result
-    }
 
-    private fun onDesc(result: String?) {
-        result ?: return
-        binding.desc.text = result
-    }
 
-    private fun onPrice(result: String?) {
+    private fun onDetail(result: DetailProduct?) {
         result ?: return
+        imageDetail = result.product_image
+        binding.tbNameProduct.title = result.product_name
+        binding.desc.text = result.product_desc
         binding.price.text =
-            NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(result.toDouble())
+            NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(result.product_price.toDouble())
+        variantAdapter.addData(result.variant)
+        variantAdapter.notifyDataSetChanged()
     }
 
-    private fun onVarian(result: List<Variants>?) {
+
+    private fun onLoadVarian(result: DetailProduct?){
         result ?: return
-        variantAdapter.addData(result)
-        variantAdapter.notifyDataSetChanged()
+        popUpAdapter.addData(result.variant)
+        popUpAdapter.notifyDataSetChanged()
     }
 
     private fun loadImage(result: List<Variants>?) {
@@ -138,6 +150,7 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                setCurrentIndicator(position)
 
             }
         })
@@ -148,10 +161,97 @@ class DetailProductActivity : AppCompatActivity(), CoroutineScope {
 
     }
 
-    fun changeImage(position: Int){
-        (binding.slider.getChildAt(1) as RecyclerView).overScrollMode =
-            RecyclerView.OVER_SCROLL_ALWAYS
+    fun showPopUp(){
+
+        val dialog = BottomSheetDialog(this)
+
+        dialog.setContentView(R.layout.pop_up_buttom)
+        imgPopUp = dialog.findViewById(R.id.img_variant)!!
+        val rv = dialog.findViewById<RecyclerView>(R.id.rv_colors)
+        val btn = dialog.findViewById<Button>(R.id.btn_ok)
+        vm.detail.observe(this, Observer(::onLoadVarian))
+
+        val photoUrl = "https://app.minjem.biz.id/upload/tech_test_image/$imageDetail"
+        Picasso.get().load(photoUrl)
+            .placeholder(R.drawable.avatar)
+            .resize(120, 200)
+            .error(R.drawable.avatar).into(imgPopUp)
+
+        btn?.setOnClickListener {
+            Toast.makeText(this, "Ok", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
+
+        rv?.apply {
+            adapter = popUpAdapter
+            layoutManager = LinearLayoutManager(
+                this@DetailProductActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+
+        dialog.show()
+
     }
 
+    fun changeImage(imgSrc: String){
+        val photoUrl = "https://app.minjem.biz.id/upload/tech_test_image/$imgSrc"
+        Picasso.get().load(photoUrl)
+            .placeholder(R.drawable.avatar)
+            .resize(120, 200)
+            .error(R.drawable.avatar).into(imgPopUp)
+
+    }
+
+
+    private fun setupIndicator() {
+        val indicator = arrayOfNulls<ImageView>(imageAdapter.itemCount)
+        val layoutParams: LinearLayout.LayoutParams =
+            LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        layoutParams.setMargins(8, 0, 8, 0)
+        for (i in indicator.indices) {
+            indicator[i] = ImageView(applicationContext)
+            indicator[i]?.let {
+                it.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        applicationContext,
+                        R.drawable.indicator_inactive
+                    )
+                )
+                it.layoutParams = layoutParams
+                binding.indicatorContent.addView(it)
+
+            }
+        }
+    }
+
+    private fun setCurrentIndicator(position: Int) {
+
+        val childCount = binding.indicatorContent.childCount
+        for (i in 0 until childCount) {
+            val imageView = binding.indicatorContent.getChildAt(i) as ImageView
+            if (i == position) {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        applicationContext,
+                        R.drawable.indicator_active
+                    )
+                )
+            } else {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        applicationContext,
+                        R.drawable.indicator_inactive
+                    )
+                )
+            }
+        }
+
+    }
 
 }
